@@ -13,10 +13,43 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-        // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
-        // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
-        // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
-        guard let _ = (scene as? UIWindowScene) else { return }
+        guard let windowScene = (scene as? UIWindowScene) else { return }
+        
+        let gameVC = GameViewController()
+        gameVC.tabBarItem = UITabBarItem(
+            title: "Play",
+            image: UIImage(systemName: "number.square"),
+            selectedImage: UIImage(systemName: "number.square.fill")
+        )
+        
+        let statsVC = StatsViewController()
+        statsVC.tabBarItem = UITabBarItem(
+            title: "Stats",
+            image: UIImage(systemName: "chart.bar"),
+            selectedImage: UIImage(systemName: "chart.bar.fill")
+        )
+        
+        let howToPlayVC = HowToPlayViewController()
+        howToPlayVC.tabBarItem = UITabBarItem(
+            title: "How to Play",
+            image: UIImage(systemName: "questionmark.circle"),
+            selectedImage: UIImage(systemName: "questionmark.circle.fill")
+        )
+        
+        let settingsVC = SettingsViewController()
+        settingsVC.tabBarItem = UITabBarItem(
+            title: "Settings",
+            image: UIImage(systemName: "gearshape"),
+            selectedImage: UIImage(systemName: "gearshape.fill")
+        )
+        
+        let tabBarController = UITabBarController()
+        tabBarController.viewControllers = [gameVC, statsVC, howToPlayVC, settingsVC]
+        
+        let window = UIWindow(windowScene: windowScene)
+        window.rootViewController = tabBarController
+        window.makeKeyAndVisible()
+        self.window = window
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
@@ -32,8 +65,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     func sceneWillResignActive(_ scene: UIScene) {
-        // Called when the scene will move from an active state to an inactive state.
-        // This may occur due to temporary interruptions (ex. an incoming phone call).
+        // Save game when user switches away from the app
+        saveCurrentGame()
     }
 
     func sceneWillEnterForeground(_ scene: UIScene) {
@@ -42,11 +75,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     func sceneDidEnterBackground(_ scene: UIScene) {
-        // Called as the scene transitions from the foreground to the background.
-        // Use this method to save data, release shared resources, and store enough scene-specific state information
-        // to restore the scene back to its current state.
+        // Also save when entering background as a safety net
+        saveCurrentGame()
     }
-
-
+    
+    private func saveCurrentGame() {
+        guard let tabBar = window?.rootViewController as? UITabBarController,
+              let gameVC = tabBar.viewControllers?.first as? GameViewController else { return }
+        gameVC.saveGame()
+    }
 }
 
