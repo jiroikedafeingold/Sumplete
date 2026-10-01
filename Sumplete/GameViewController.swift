@@ -5,6 +5,7 @@
 //  Created by Jiro on 4/3/26.
 //
 
+import StoreKit
 import UIKit
 
 class GameViewController: UIViewController {
@@ -742,6 +743,14 @@ class GameViewController: UIViewController {
         
         view.addSubview(celebration)
         celebration.animateIn()
+
+        // Once the celebration has had a moment, ask for a rating if it's due.
+        if ReviewPrompter.recordSolve() {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
+                guard let scene = self?.view.window?.windowScene else { return }
+                AppStore.requestReview(in: scene)
+            }
+        }
     }
     
     // MARK: - Timer

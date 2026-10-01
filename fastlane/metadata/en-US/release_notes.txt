@@ -1,0 +1,5 @@
+Small polish and fixes throughout.
+
+Enjoying $umplete? You may now see an occasional prompt to rate the app after a solve. It only appears now and then, and a quick rating really helps.
+
+Thanks for playing!
